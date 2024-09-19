@@ -1,27 +1,17 @@
-This is educatinal REST-API project `filmoteka` in Golang and PostgreSQL
+This is an educatinal REST-API project, Docker containerized server `filmoteka` in Golang and PostgreSQL.
 
 ## Installation 
-```bash
+```shell
 git clone https://github.com/hectorbarbosa/filmoteka-rest-api.git
 ```
-```bash
+```shell
 cd filmoteka-rest-api 
 ```
-## Config 
-- Server port by default :8080. Edit .env file to change it if needed. 
-- `postgreSQL` credentials are located in .env file and in Makefile (`postgres`, `postgres`, 5432 by default)
-
-## Create Database and required tables 
-```bash
-make createdb
+## Create and start postgres container in background. Database and tables will be in place
+```shell
+docker compose up postgres -d
 ```
-```bash
-make createtables 
+##  Start REST-API server
+```shell
+docker compose up api
 ```
-##  Compile project
-```bash
-make
-```
-##  Run project
-```bash
-make run

@@ -1,20 +1,22 @@
-# Create database
+# Create local database
 .PHONY: createdb 
 createdb:
 	psql -h localhost -U postgres \
         -c "CREATE DATABASE filmoteka ENCODING='UTF8'";
 
-# Drop database
+# Drop local database
 .PHONY: dropdb 
 dropdb:
 	psql -h localhost -U postgres \
         -c "DROP DATABASE IF EXISTS filmoteka";
 
+# Create Docker container `filmoteka` tables
 migrateup:
-	migrate -database "postgres://postgres:postgres@localhost:5432/filmoteka?sslmode=disable" -path db/migrations up
+	docker compose run api migrate -path /api/migrations/ -database postgres://user:password@postgres:5432/filmoteka?sslmode=disable up
 
+# Drop Docker container `filmoteka` tables
 migratedown:
-	migrate -database "postgres://postgres:postgres@localhost:5432/filmoteka?sslmode=disable" -path db/migrations down
+	docker compose run api migrate -path /api/migrations/ -database postgres://user:password@postgres:5432/filmoteka?sslmode=disable down 
 	
 .PHONY: build
 build:

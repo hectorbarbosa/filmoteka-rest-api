@@ -1,0 +1,30 @@
+services:
+  api:
+    container_name: rest_api
+    build: 
+      context: .
+      dockerfile: ./build/rest-server/Dockerfile
+    ports:
+      - "8080:8080"
+    command: 
+      - ./bin/filmoteka 
+    environment:
+      DATABASE_HOST: postgres
+    # docker compose run api migrate -path /api/migrations/ -database postgres://user:password@postgres:5432/filmoteka?sslmode=disable up
+    depends_on:
+      - postgres
+  postgres:
+    image: postgres:16.4-alpine
+    container_name: postgres
+    restart: always
+    ports:
+      - "2345:5432"
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: filmoteka
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+volumes:
+  db_data: {}
