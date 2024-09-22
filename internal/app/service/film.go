@@ -3,18 +3,18 @@ package service
 import (
 	"fmt"
 
-	"fimoteka/internal"
-	"fimoteka/internal/app/models"
-	"fimoteka/internal/restapi"
+	"filmoteka/internal"
+	"filmoteka/internal/app/models"
+	m "filmoteka/internal/restapi/models"
 )
 
 // FilmRepository defines the datastore handling Film records.
 type FilmRepository interface {
-	Create(f restapi.CreateFilm) (models.Film, error)
+	Create(f m.CreateFilm) (models.Film, error)
 	Delete(id string) error
 	SearchBy() ([]models.Film, error)
 	Find(id string) (models.Film, error)
-	Update(id string, f restapi.UpdateFilm) error
+	Update(id string, f m.UpdateFilm) error
 }
 
 // FilmService defines the application service in charge of interacting with Tasks.
@@ -30,7 +30,7 @@ func NewFilmService(repo FilmRepository) *FilmService {
 }
 
 // Create stores a new record.
-func (s *FilmService) Create(f restapi.CreateFilm) (models.Film, error) {
+func (s *FilmService) Create(f m.CreateFilm) (models.Film, error) {
 	if err := f.Validate(); err != nil {
 		return models.Film{}, internal.WrapErrorf(err, internal.ErrorCodeInvalidArgument, "validate film")
 	}
@@ -73,7 +73,7 @@ func (s *FilmService) Search() ([]models.Film, error) {
 }
 
 // Update updates an existing Film in the datastore.
-func (s *FilmService) Update(id string, f restapi.UpdateFilm) error {
+func (s *FilmService) Update(id string, f m.UpdateFilm) error {
 	if err := f.Validate(); err != nil {
 		return internal.WrapErrorf(err, internal.ErrorCodeInvalidArgument, "validate film")
 	}

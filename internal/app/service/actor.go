@@ -3,18 +3,18 @@ package service
 import (
 	"fmt"
 
-	"fimoteka/internal"
-	"fimoteka/internal/app/models"
-	"fimoteka/internal/restapi"
+	"filmoteka/internal"
+	"filmoteka/internal/app/models"
+	m "filmoteka/internal/restapi/models"
 )
 
 // ActorRepository defines the datastore handling Actor records.
 type ActorRepository interface {
-	Create(f restapi.CreateActor) (models.Actor, error)
+	Create(f m.CreateActor) (models.Actor, error)
 	Delete(id string) error
 	SearchBy() ([]models.Actor, error)
 	Find(id string) (models.Actor, error)
-	Update(id string, f restapi.UpdateActor) error
+	Update(id string, f m.UpdateActor) error
 }
 
 // Task defines the application service in charge of interacting with Tasks.
@@ -30,7 +30,7 @@ func NewActorService(repo ActorRepository) *ActorService {
 }
 
 // Create stores a new record.
-func (s *ActorService) Create(a restapi.CreateActor) (models.Actor, error) {
+func (s *ActorService) Create(a m.CreateActor) (models.Actor, error) {
 	if err := a.Validate(); err != nil {
 		return models.Actor{}, internal.WrapErrorf(err, internal.ErrorCodeInvalidArgument, "validate actor")
 	}
@@ -73,7 +73,7 @@ func (s *ActorService) Search() ([]models.Actor, error) {
 }
 
 // Update updates an existing Actor in the datastore.
-func (s *ActorService) Update(id string, a restapi.UpdateActor) error {
+func (s *ActorService) Update(id string, a m.UpdateActor) error {
 	if err := a.Validate(); err != nil {
 		return internal.WrapErrorf(err, internal.ErrorCodeInvalidArgument, "validate actor")
 	}

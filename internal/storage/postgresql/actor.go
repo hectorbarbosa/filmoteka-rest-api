@@ -4,9 +4,9 @@ import (
 	"database/sql"
 	"strings"
 
-	"fimoteka/internal"
-	"fimoteka/internal/app/models"
-	"fimoteka/internal/restapi"
+	"filmoteka/internal"
+	"filmoteka/internal/app/models"
+	m "filmoteka/internal/restapi/models"
 )
 
 // Film represents the repository used for interacting with Film records.
@@ -22,7 +22,7 @@ func NewActor(db *sql.DB) *ActorRepository {
 }
 
 // Create inserts a new Actor record.
-func (r *ActorRepository) Create(a restapi.CreateActor) (models.Actor, error) {
+func (r *ActorRepository) Create(a m.CreateActor) (models.Actor, error) {
 	var id int
 	if err := r.db.QueryRow(
 		"INSERT INTO actors (name, gender, birth_date) VALUES ($1, $2, $3) RETURNING id;",
@@ -111,7 +111,7 @@ func (r *ActorRepository) Find(id string) (models.Actor, error) {
 	return a, nil
 }
 
-func (r *ActorRepository) Update(id string, a restapi.UpdateActor) error {
+func (r *ActorRepository) Update(id string, a m.UpdateActor) error {
 	result, err := r.db.Exec(
 		"UPDATE actors SET name=$1, gender=$2, birth_date=$3 WHERE id=$4;",
 		a.Name,

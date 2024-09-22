@@ -1,11 +1,13 @@
-module fimoteka
+module filmoteka
 
 go 1.22.2
 
 require github.com/joho/godotenv v1.5.1
 
 require (
+	github.com/go-playground/assert v1.2.1
 	github.com/go-playground/validator/v10 v10.22.1
+	github.com/golang/mock v1.6.0
 	github.com/gorilla/mux v1.8.1
 	github.com/lib/pq v1.10.9
 	github.com/stretchr/testify v1.9.0

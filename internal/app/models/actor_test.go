@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"fimoteka/internal/app/models"
+	"filmoteka/internal/app/models"
 )
 
 func TestActor_Validate(t *testing.T) {

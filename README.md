@@ -1,4 +1,4 @@
-This is an educatinal REST-API project, Docker containerized server `filmoteka` in Golang and PostgreSQL.
+This is an educational REST-API project, Docker containerized server `filmoteka` in Golang and PostgreSQL.
 
 ## Installation 
 ```shell

@@ -11,9 +11,9 @@ import (
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 
-	"fimoteka/internal/app/service"
-	"fimoteka/internal/restapi"
-	"fimoteka/internal/storage/postgresql"
+	"filmoteka/internal/app/service"
+	"filmoteka/internal/restapi"
+	"filmoteka/internal/storage/postgresql"
 )
 
 func main() {

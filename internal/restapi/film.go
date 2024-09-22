@@ -2,22 +2,26 @@ package restapi
 
 import (
 	"encoding/json"
-	"fimoteka/internal"
-	"fimoteka/internal/app/models"
 	"fmt"
 	"net/http"
 
 	"github.com/gorilla/mux"
+
+	"filmoteka/internal"
+	"filmoteka/internal/app/models"
+	m "filmoteka/internal/restapi/models"
 )
 
 // FilmService ...
+//
+//go:generate mockgen -source=film.go -destination=mock_restapi/mockfilm.go
 type FilmService interface {
 	// By(args internal.SearchParams) (internal.SearchResults, error)
-	Create(f CreateFilm) (models.Film, error)
+	Create(f m.CreateFilm) (models.Film, error)
 	Delete(id string) error
 	Search() ([]models.Film, error)
 	Find(id string) (models.Film, error)
-	Update(id string, f UpdateFilm) error
+	Update(id string, f m.UpdateFilm) error
 }
 
 // FilmHandler ...
@@ -41,7 +45,7 @@ func (h *FilmHandler) Register(r *mux.Router) {
 }
 
 func (h *FilmHandler) create(w http.ResponseWriter, r *http.Request) {
-	var req CreateFilm
+	var req m.CreateFilm
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		e := internal.WrapErrorf(err, internal.ErrorCodeInvalidArgument, "json decoder")
 		msg := fmt.Errorf("invalid request %w", e)
@@ -110,7 +114,7 @@ func (h *FilmHandler) find(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *FilmHandler) update(w http.ResponseWriter, r *http.Request) {
-	var req UpdateFilm
+	var req m.UpdateFilm
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		e := internal.WrapErrorf(err, internal.ErrorCodeInvalidArgument, "json decoder")
 		msg := fmt.Errorf("invalid request %w", e)

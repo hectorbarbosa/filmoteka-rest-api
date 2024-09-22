@@ -2,21 +2,25 @@ package restapi
 
 import (
 	"encoding/json"
-	"fimoteka/internal"
-	"fimoteka/internal/app/models"
 	"fmt"
 	"net/http"
 
 	"github.com/gorilla/mux"
+
+	"filmoteka/internal"
+	"filmoteka/internal/app/models"
+	m "filmoteka/internal/restapi/models"
 )
+
+//go:generate mockgen -source=actor.go -destination=mock_restapi/mock.go
 
 // ActorService
 type ActorService interface {
-	Create(f CreateActor) (models.Actor, error)
+	Create(a m.CreateActor) (models.Actor, error)
 	Delete(id string) error
 	Search() ([]models.Actor, error)
 	Find(id string) (models.Actor, error)
-	Update(id string, f UpdateActor) error
+	Update(id string, a m.UpdateActor) error
 }
 
 // ActorHandler
@@ -40,7 +44,7 @@ func (h *ActorHandler) Register(r *mux.Router) {
 }
 
 func (h *ActorHandler) create(w http.ResponseWriter, r *http.Request) {
-	var req CreateActor
+	var req m.CreateActor
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		e := internal.WrapErrorf(err, internal.ErrorCodeInvalidArgument, "json decoder")
 		msg := fmt.Errorf("invalid request %w", e)
@@ -109,7 +113,7 @@ func (h *ActorHandler) find(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *ActorHandler) update(w http.ResponseWriter, r *http.Request) {
-	var req UpdateActor
+	var req m.UpdateActor
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		e := internal.WrapErrorf(err, internal.ErrorCodeInvalidArgument, "json decoder")
 		msg := fmt.Errorf("invalid request %w", e)

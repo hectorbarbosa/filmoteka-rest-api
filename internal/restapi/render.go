@@ -5,7 +5,7 @@ import (
 	"errors"
 	"net/http"
 
-	"fimoteka/internal"
+	"filmoteka/internal"
 )
 
 // ErrorResponse represents a response containing an error message.
