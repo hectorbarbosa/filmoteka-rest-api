@@ -12,7 +12,7 @@ import (
 	m "filmoteka/internal/restapi/models"
 )
 
-//go:generate mockgen -source=actor.go -destination=mock_restapi/mock.go
+//go:generate mockgen -source=actor.go -destination=mock_restapi/mockactor.go
 
 // ActorService
 type ActorService interface {
