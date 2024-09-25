@@ -38,9 +38,12 @@ func (f *UpdateFilm) Validate() error {
 }
 
 type CreateActor struct {
-	Name      string `json:"name" validate:"required,min=3,max=100"`
-	Gender    string `json:"gender" validate:"required,len=1"`
-	BirthDate string `json:"birth_date" validate:"required"`
+	// Actors name
+	Name string `json:"name" validate:"required,min=3,max=100" example:"Johnny Depp"`
+	// Gender, "M" or "F"
+	Gender string `json:"gender" validate:"required,len=1" example:"M"`
+	// Birth date in 2006-01-02 format
+	BirthDate string `json:"birth_date" validate:"required" example:"1963-06-09"`
 }
 
 func (a *CreateActor) Validate() error {
@@ -59,9 +62,12 @@ func (a *CreateActor) Validate() error {
 }
 
 type UpdateActor struct {
-	Name      string `json:"name" validate:"required,min=3,max=100"`
-	Gender    string `json:"gender" validate:"required,len=1"`
-	BirthDate string `json:"birth_date" validate:"required"`
+	// Actors name
+	Name string `json:"name" validate:"required,min=3,max=100" example:"Johnny Depp"`
+	// Gender, "M" or "F"
+	Gender string `json:"gender" validate:"required,len=1" example:"M"`
+	// Birth date in 2006-01-02 format
+	BirthDate string `json:"birth_date" validate:"required" example:"1963-06-09"`
 }
 
 func (a *UpdateActor) Validate() error {

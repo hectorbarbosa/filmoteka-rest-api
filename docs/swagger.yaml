@@ -1,0 +1,230 @@
+definitions:
+  internal.Error:
+    type: object
+  models.Actor:
+    properties:
+      birth_date:
+        description: Birth date in 2006-01-02 format
+        example: "1963-06-09"
+        type: string
+      gender:
+        description: Gender, "M" or "F"
+        example: M
+        type: string
+      id:
+        type: integer
+      name:
+        description: Actors name
+        example: Johnny Depp
+        maxLength: 100
+        minLength: 3
+        type: string
+    required:
+    - birth_date
+    - gender
+    - name
+    type: object
+  models.CreateActor:
+    properties:
+      birth_date:
+        description: Birth date in 2006-01-02 format
+        example: "1963-06-09"
+        type: string
+      gender:
+        description: Gender, "M" or "F"
+        example: M
+        type: string
+      name:
+        description: Actors name
+        example: Johnny Depp
+        maxLength: 100
+        minLength: 3
+        type: string
+    required:
+    - birth_date
+    - gender
+    - name
+    type: object
+  models.UpdateActor:
+    properties:
+      birth_date:
+        description: Birth date in 2006-01-02 format
+        example: "1963-06-09"
+        type: string
+      gender:
+        description: Gender, "M" or "F"
+        example: M
+        type: string
+      name:
+        description: Actors name
+        example: Johnny Depp
+        maxLength: 100
+        minLength: 3
+        type: string
+    required:
+    - birth_date
+    - gender
+    - name
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: This is a sample filmoteka server.
+  title: Swagger filmoteka API
+  version: "1.0"
+paths:
+  /actors:
+    get:
+      consumes:
+      - application/json
+      description: get all actors
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            items:
+              $ref: '#/definitions/models.Actor'
+            type: array
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/internal.Error'
+        "404":
+          description: Resource not found
+          schema:
+            $ref: '#/definitions/internal.Error'
+        "500":
+          description: Internal error
+          schema:
+            $ref: '#/definitions/internal.Error'
+      tags:
+      - Actors
+    post:
+      consumes:
+      - application/json
+      description: create new actor
+      parameters:
+      - description: input data
+        in: body
+        name: json
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateActor'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            $ref: '#/definitions/models.Actor'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/internal.Error'
+        "500":
+          description: Internal error
+          schema:
+            $ref: '#/definitions/internal.Error'
+      tags:
+      - Actors
+  /actors/{id}:
+    delete:
+      description: delete one actors by id
+      parameters:
+      - description: Actor ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/internal.Error'
+        "404":
+          description: Resource not found
+          schema:
+            $ref: '#/definitions/internal.Error'
+        "500":
+          description: Internal error
+          schema:
+            $ref: '#/definitions/internal.Error'
+      tags:
+      - Actors
+    get:
+      description: get one actors by id
+      parameters:
+      - description: Actor ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            $ref: '#/definitions/models.Actor'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/internal.Error'
+        "404":
+          description: Resource not found
+          schema:
+            $ref: '#/definitions/internal.Error'
+        "500":
+          description: Internal error
+          schema:
+            $ref: '#/definitions/internal.Error'
+      tags:
+      - Actors
+    put:
+      consumes:
+      - application/json
+      description: Update actor by id
+      parameters:
+      - description: Actor ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: input data
+        in: body
+        name: json
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateActor'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            $ref: '#/definitions/models.Actor'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/internal.Error'
+        "404":
+          description: Resource not found
+          schema:
+            $ref: '#/definitions/internal.Error'
+        "500":
+          description: Internal error
+          schema:
+            $ref: '#/definitions/internal.Error'
+      tags:
+      - Actors
+schemes:
+- http
+swagger: "2.0"

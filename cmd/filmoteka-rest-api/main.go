@@ -10,11 +10,19 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
+	httpSwagger "github.com/swaggo/http-swagger/v2"
 
+	_ "filmoteka/docs"
 	"filmoteka/internal/app/service"
 	"filmoteka/internal/restapi"
 	"filmoteka/internal/storage/postgresql"
 )
+
+//	@title			Swagger filmoteka API
+//	@version		1.0
+//	@description	This is a sample filmoteka server.
+//  @schemes        http
+//  @host           localhost:8080
 
 func main() {
 	err := godotenv.Load(".env")
@@ -38,6 +46,15 @@ func main() {
 	restapi.NewActorHandler(svcActors).Register(r)
 
 	address := os.Getenv("BIND_ADDR")
+	// swagUrl := "http://localhost:" + address + "docs/doc.json"
+	swagUrl := "./docs/doc.json"
+
+	r.PathPrefix("/docs/").Handler(httpSwagger.Handler(
+		httpSwagger.URL(swagUrl), //The url pointing to API definition
+		httpSwagger.DeepLinking(true),
+		httpSwagger.DocExpansion("none"),
+		httpSwagger.DomID("swagger-ui"),
+	)).Methods(http.MethodGet)
 
 	srv := &http.Server{
 		Handler:           r,

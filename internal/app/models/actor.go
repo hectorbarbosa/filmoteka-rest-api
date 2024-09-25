@@ -8,10 +8,13 @@ import (
 )
 
 type Actor struct {
-	Id        int    `json:"id"`
-	Name      string `json:"name" validate:"required,min=3,max=100"`
-	Gender    string `json:"gender" validate:"required,len=1"`
-	BirthDate string `json:"birth_date" validate:"required"`
+	Id int `json:"id"`
+	// Actors name
+	Name string `json:"name" validate:"required,min=3,max=100" example:"Johnny Depp"`
+	// Gender, "M" or "F"
+	Gender string `json:"gender" validate:"required,len=1" example:"M"`
+	// Birth date in 2006-01-02 format
+	BirthDate string `json:"birth_date" validate:"required" example:"1963-06-09"`
 }
 
 func (a *Actor) Validate() error {

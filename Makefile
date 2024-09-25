@@ -26,6 +26,10 @@ build:
 run:
 	bin/filmoteka
 
+.PHONY: swagger 
+swagger:
+	swag init -d ./cmd/filmoteka-rest-api,./internal/restapi,./internal/app/models,./internal,internal/restapi/models
+
 .PHONY: test
 test:
 	go test -v -race -timeout 30s ./...

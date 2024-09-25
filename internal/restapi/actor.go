@@ -43,6 +43,16 @@ func (h *ActorHandler) Register(r *mux.Router) {
 	r.HandleFunc("/actors/{id}", h.delete).Methods(http.MethodDelete)
 }
 
+//	@Tags Actors
+//
+// @Description	create new actor
+// @Accept		json
+// @Produce		json
+// @Param		json	body		m.CreateActor	true	"input data"
+// @Success		200		{object}	models.Actor			"ok"
+// @Failure		400		{object}	internal.Error	"Bad request"
+// @Failure		500		{object}	internal.Error	"Internal error"
+// @Router		/actors [post]
 func (h *ActorHandler) create(w http.ResponseWriter, r *http.Request) {
 	var req m.CreateActor
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
@@ -67,6 +77,16 @@ func (h *ActorHandler) create(w http.ResponseWriter, r *http.Request) {
 		http.StatusCreated)
 }
 
+//	@Tags Actors
+//
+// @Description	delete one actors by id
+// @Param		id		path		int		true	"Actor ID"
+// @Produce		json
+// @Success		200		string		null				"ok"
+// @Failure		400		{object}	internal.Error	"Bad request"
+// @Failure		404		{object}	internal.Error	"Resource not found"
+// @Failure		500		{object}	internal.Error	"Internal error"
+// @Router		/actors/{id} [delete]
 func (h *ActorHandler) delete(w http.ResponseWriter, r *http.Request) {
 	id := mux.Vars(r)["id"] // NOTE: Safe to ignore error, because it's always defined.
 
@@ -84,6 +104,16 @@ type ReadActorResponse struct {
 	Film models.Actor `json:"actor"`
 }
 
+//	@Tags Actors
+//
+// @Description	get all actors
+// @Accept		json
+// @Produce		json
+// @Success		200		{object}	[]models.Actor			"ok"
+// @Failure		400		{object}	internal.Error	"Bad request"
+// @Failure		404		{object}	internal.Error	"Resource not found"
+// @Failure		500		{object}	internal.Error	"Internal error"
+// @Router		/actors [get]
 func (h *ActorHandler) search(w http.ResponseWriter, r *http.Request) {
 	actors, err := h.svc.Search()
 	if err != nil {
@@ -97,6 +127,16 @@ func (h *ActorHandler) search(w http.ResponseWriter, r *http.Request) {
 		http.StatusOK)
 }
 
+//	@Tags Actors
+//
+// @Description	get one actors by id
+// @Param		id		path		int		true	"Actor ID"
+// @Produce		json
+// @Success		200		{object}	models.Actor			"ok"
+// @Failure		400		{object}	internal.Error	"Bad request"
+// @Failure		404		{object}	internal.Error	"Resource not found"
+// @Failure		500		{object}	internal.Error	"Internal error"
+// @Router		/actors/{id} [get]
 func (h *ActorHandler) find(w http.ResponseWriter, r *http.Request) {
 	id := mux.Vars(r)["id"] // NOTE: Safe to ignore error, because it's always defined.
 
@@ -112,6 +152,18 @@ func (h *ActorHandler) find(w http.ResponseWriter, r *http.Request) {
 		http.StatusOK)
 }
 
+//	@Tags Actors
+//
+// @Description	Update actor by id
+// @Param		id		path		int		true	"Actor ID"
+// @Accept		json
+// @Produce		json
+// @Param		json	body		m.UpdateActor	true	"input data"
+// @Success		200		{object}	models.Actor			"ok"
+// @Failure		400		{object}	internal.Error	"Bad request"
+// @Failure		404		{object}	internal.Error	"Resource not found"
+// @Failure		500		{object}	internal.Error	"Internal error"
+// @Router		/actors/{id} [put]
 func (h *ActorHandler) update(w http.ResponseWriter, r *http.Request) {
 	var req m.UpdateActor
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {

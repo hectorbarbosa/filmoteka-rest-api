@@ -3,6 +3,7 @@ package restapi
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 
 	"filmoteka/internal"
@@ -39,7 +40,6 @@ func renderResponse(w http.ResponseWriter, res interface{}, status int) {
 
 	content, err := json.Marshal(res)
 	if err != nil {
-		// XXX Do something with the error ;)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -47,6 +47,6 @@ func renderResponse(w http.ResponseWriter, res interface{}, status int) {
 	w.WriteHeader(status)
 
 	if _, err = w.Write(content); err != nil {
-		// XXX Do something with the error ;)
+		fmt.Println("error writing content")
 	}
 }
