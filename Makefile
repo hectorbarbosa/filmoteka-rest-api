@@ -24,7 +24,7 @@ build:
 
 .PHONY: run 
 run:
-	bin/filmoteka
+	bin/filmoteka -env ./local.env
 
 .PHONY: swagger 
 swagger:

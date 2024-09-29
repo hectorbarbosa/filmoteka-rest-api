@@ -2,6 +2,7 @@ package restapi
 
 import (
 	"bytes"
+	"context"
 	"errors"
 	"net/http/httptest"
 	"testing"
@@ -15,9 +16,16 @@ import (
 	m "filmoteka/internal/restapi/models"
 )
 
+type key int
+
+const (
+	key1 key = iota
+	key2
+)
+
 func TestHandler_FilmCreate(t *testing.T) {
 	// Init Test Table
-	type mockBehavior func(r *mock_restapi.MockFilmService, a m.CreateFilm)
+	type mockBehavior func(ctx context.Context, r *mock_restapi.MockFilmService, f m.CreateFilm)
 
 	testFilm := models.Film{
 		Id:          1,
@@ -44,8 +52,11 @@ func TestHandler_FilmCreate(t *testing.T) {
 				ReleaseYear: 2002,
 				Rating:      7.5,
 			},
-			mockBehavior: func(r *mock_restapi.MockFilmService, a m.CreateFilm) {
-				r.EXPECT().Create(a).Return(testFilm, nil)
+			mockBehavior: func(
+				ctx context.Context,
+				r *mock_restapi.MockFilmService,
+				f m.CreateFilm) {
+				r.EXPECT().Create(ctx, f).Return(testFilm, nil)
 			},
 			expectedStatusCode:   201,
 			expectedResponseBody: `{"id":1,"name":"Test Name","description":"Desc1","release_year":2002,"rating":7.5}`,
@@ -54,7 +65,7 @@ func TestHandler_FilmCreate(t *testing.T) {
 			name:                 "Wrong Input",
 			inputBody:            "",
 			input:                m.CreateFilm{},
-			mockBehavior:         func(r *mock_restapi.MockFilmService, a m.CreateFilm) {},
+			mockBehavior:         func(ctx context.Context, r *mock_restapi.MockFilmService, f m.CreateFilm) {},
 			expectedStatusCode:   400,
 			expectedResponseBody: `{"error":"invalid request json decoder: EOF"}`,
 		},
@@ -67,8 +78,8 @@ func TestHandler_FilmCreate(t *testing.T) {
 				ReleaseYear: 2002,
 				Rating:      7.5,
 			},
-			mockBehavior: func(r *mock_restapi.MockFilmService, a m.CreateFilm) {
-				r.EXPECT().Create(a).Return(models.Film{}, errors.New(`internal error`))
+			mockBehavior: func(ctx context.Context, r *mock_restapi.MockFilmService, f m.CreateFilm) {
+				r.EXPECT().Create(ctx, f).Return(models.Film{}, errors.New(`internal error`))
 			},
 			expectedStatusCode:   500,
 			expectedResponseBody: `{"error":"internal error"}`,
@@ -82,14 +93,18 @@ func TestHandler_FilmCreate(t *testing.T) {
 			defer c.Finish()
 
 			r := mux.NewRouter()
-			svc := mock_restapi.NewMockFilmService(c)
-			tt.mockBehavior(svc, tt.input)
-			NewFilmHandler(svc).Register(r)
-
 			// Create Request
 			w := httptest.NewRecorder()
 			req := httptest.NewRequest("POST", "/films",
 				bytes.NewBufferString(tt.inputBody))
+
+			ctx := req.Context()
+			// ctx = context.WithValue(ctx, "key1", "<no Stringer>")
+			// ctx = context.WithValue(ctx, "key2", "<no Stringer>")
+
+			svc := mock_restapi.NewMockFilmService(c)
+			tt.mockBehavior(ctx, svc, tt.input)
+			NewFilmHandler(svc).Register(r)
 
 			// Make Request
 			r.ServeHTTP(w, req)
@@ -170,9 +185,9 @@ func TestHandler_FilmFind(t *testing.T) {
 	}
 }
 
-func TestHandler_FilmSearch(t *testing.T) {
+func TestHandler_FilmFindAll(t *testing.T) {
 	// Init Test Table
-	type mockBehavior func(r *mock_restapi.MockFilmService)
+	type mockBehavior func(ctx context.Context, r *mock_restapi.MockFilmService)
 
 	actors := []models.Film{
 
@@ -202,8 +217,8 @@ func TestHandler_FilmSearch(t *testing.T) {
 		{
 			name:      "Ok",
 			inputBody: ``,
-			mockBehavior: func(r *mock_restapi.MockFilmService) {
-				r.EXPECT().Search().Return(actors, nil)
+			mockBehavior: func(ctx context.Context, r *mock_restapi.MockFilmService) {
+				r.EXPECT().FindAll().Return(actors, nil)
 			},
 			expectedStatusCode:   200,
 			expectedResponseBody: `[{"id":1,"name":"Test Name","description":"Desc1","release_year":2002,"rating":7.5},{"id":2,"name":"Test Name 2","description":"Desc2","release_year":2002,"rating":7.5}]`,
@@ -211,8 +226,8 @@ func TestHandler_FilmSearch(t *testing.T) {
 		{
 			name:      "Service Error",
 			inputBody: ``,
-			mockBehavior: func(r *mock_restapi.MockFilmService) {
-				r.EXPECT().Search().Return(actors, errors.New(`internal error`))
+			mockBehavior: func(ctx context.Context, r *mock_restapi.MockFilmService) {
+				r.EXPECT().FindAll().Return(actors, errors.New(`internal error`))
 			},
 			expectedStatusCode:   500,
 			expectedResponseBody: `{"error":"internal error"}`,
@@ -231,7 +246,7 @@ func TestHandler_FilmSearch(t *testing.T) {
 
 			r := mux.NewRouter()
 			svc := mock_restapi.NewMockFilmService(c)
-			tt.mockBehavior(svc)
+			tt.mockBehavior(req.Context(), svc)
 			NewFilmHandler(svc).Register(r)
 
 			// Make Request
@@ -246,7 +261,7 @@ func TestHandler_FilmSearch(t *testing.T) {
 
 func TestHandler_FilmDelete(t *testing.T) {
 	// Init Test Table
-	type mockBehavior func(r *mock_restapi.MockFilmService, id string)
+	type mockBehavior func(ctx context.Context, r *mock_restapi.MockFilmService, id string)
 
 	tests := []struct {
 		name                 string
@@ -260,8 +275,8 @@ func TestHandler_FilmDelete(t *testing.T) {
 			name:      "Ok",
 			input:     "1",
 			inputBody: ``,
-			mockBehavior: func(r *mock_restapi.MockFilmService, id string) {
-				r.EXPECT().Delete(id).Return(nil)
+			mockBehavior: func(ctx context.Context, r *mock_restapi.MockFilmService, id string) {
+				r.EXPECT().Delete(ctx, id).Return(nil)
 			},
 			expectedStatusCode:   200,
 			expectedResponseBody: `{}`,
@@ -270,8 +285,8 @@ func TestHandler_FilmDelete(t *testing.T) {
 			name:      "Service Error",
 			input:     "1",
 			inputBody: ``,
-			mockBehavior: func(r *mock_restapi.MockFilmService, id string) {
-				r.EXPECT().Delete(id).Return(errors.New(`internal error`))
+			mockBehavior: func(ctx context.Context, r *mock_restapi.MockFilmService, id string) {
+				r.EXPECT().Delete(ctx, id).Return(errors.New(`internal error`))
 			},
 			expectedStatusCode:   500,
 			expectedResponseBody: `{"error":"internal error"}`,
@@ -285,14 +300,14 @@ func TestHandler_FilmDelete(t *testing.T) {
 			defer c.Finish()
 
 			r := mux.NewRouter()
-			svc := mock_restapi.NewMockFilmService(c)
-			tt.mockBehavior(svc, tt.input)
-			NewFilmHandler(svc).Register(r)
-
 			// Create Request
 			w := httptest.NewRecorder()
 			reqUrl := "/films/" + tt.input
 			req := httptest.NewRequest("DELETE", reqUrl, bytes.NewBufferString(""))
+
+			svc := mock_restapi.NewMockFilmService(c)
+			tt.mockBehavior(context.Background(), svc, tt.input)
+			NewFilmHandler(svc).Register(r)
 
 			// Make Request
 			r.ServeHTTP(w, req)
@@ -306,7 +321,7 @@ func TestHandler_FilmDelete(t *testing.T) {
 
 func TestHandler_FilmUpdate(t *testing.T) {
 	// Init Test Table
-	type mockBehavior func(r *mock_restapi.MockFilmService, a m.UpdateFilm, id string)
+	type mockBehavior func(ctx context.Context, r *mock_restapi.MockFilmService, a m.UpdateFilm, id string)
 
 	testFilm := m.UpdateFilm{
 		Name:        "Test Name",
@@ -327,8 +342,8 @@ func TestHandler_FilmUpdate(t *testing.T) {
 			name:      "Ok",
 			input:     testFilm,
 			inputBody: `{"name":"Test Name","description":"Desc1","release_year":2002,"rating":7.5}`,
-			mockBehavior: func(r *mock_restapi.MockFilmService, a m.UpdateFilm, id string) {
-				r.EXPECT().Update(id, a).Return(nil)
+			mockBehavior: func(ctx context.Context, r *mock_restapi.MockFilmService, f m.UpdateFilm, id string) {
+				r.EXPECT().Update(ctx, id, f).Return(nil)
 			},
 			expectedStatusCode:   200,
 			expectedResponseBody: `{}`,
@@ -337,8 +352,8 @@ func TestHandler_FilmUpdate(t *testing.T) {
 			name:      "Service Error",
 			input:     testFilm,
 			inputBody: `{"name":"Test Name","description":"Desc1","release_year":2002,"rating":7.5}`,
-			mockBehavior: func(r *mock_restapi.MockFilmService, a m.UpdateFilm, id string) {
-				r.EXPECT().Update(id, a).Return(errors.New(`internal error`))
+			mockBehavior: func(ctx context.Context, r *mock_restapi.MockFilmService, a m.UpdateFilm, id string) {
+				r.EXPECT().Update(ctx, id, a).Return(errors.New(`internal error`))
 			},
 			expectedStatusCode:   500,
 			expectedResponseBody: `{"error":"internal error"}`,
@@ -359,7 +374,7 @@ func TestHandler_FilmUpdate(t *testing.T) {
 			r := mux.NewRouter()
 			svc := mock_restapi.NewMockFilmService(c)
 			// id := mux.Vars(req)["id"]
-			tt.mockBehavior(svc, tt.input, "1")
+			tt.mockBehavior(context.Background(), svc, tt.input, "1")
 			NewFilmHandler(svc).Register(r)
 
 			// Make Request

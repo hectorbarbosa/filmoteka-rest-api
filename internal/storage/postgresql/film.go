@@ -65,7 +65,7 @@ func (r *FilmRepository) Delete(id string) error {
 	return nil
 }
 
-func (r *FilmRepository) SearchBy() ([]models.Film, error) {
+func (r *FilmRepository) FindAll() ([]models.Film, error) {
 	f := &models.Film{}
 	films := make([]models.Film, 0)
 	rows, err := r.db.Query(

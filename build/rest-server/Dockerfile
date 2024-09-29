@@ -21,9 +21,9 @@ ENV PATH=/api/bin/:$PATH
 
 COPY --from=builder /build/filmoteka-rest-api ./bin/filmoteka
 COPY --from=builder /go/bin/migrate ./bin/migrate
-COPY --from=builder /build/.env .
+COPY --from=builder /build/docker.env .
 COPY --from=builder /build/db/ .
 
 EXPOSE 8080 
 
-# CMD ["filmoteka"]
+# CMD ["./bin/filmoteka -env ./docker.env"]

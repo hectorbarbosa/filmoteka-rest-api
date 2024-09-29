@@ -5,6 +5,7 @@
 package mock_restapi
 
 import (
+	context "context"
 	models "filmoteka/internal/app/models"
 	models0 "filmoteka/internal/restapi/models"
 	reflect "reflect"
@@ -36,32 +37,32 @@ func (m *MockFilmService) EXPECT() *MockFilmServiceMockRecorder {
 }
 
 // Create mocks base method.
-func (m *MockFilmService) Create(f models0.CreateFilm) (models.Film, error) {
+func (m *MockFilmService) Create(ctx context.Context, f models0.CreateFilm) (models.Film, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Create", f)
+	ret := m.ctrl.Call(m, "Create", ctx, f)
 	ret0, _ := ret[0].(models.Film)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // Create indicates an expected call of Create.
-func (mr *MockFilmServiceMockRecorder) Create(f interface{}) *gomock.Call {
+func (mr *MockFilmServiceMockRecorder) Create(ctx, f interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockFilmService)(nil).Create), f)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockFilmService)(nil).Create), ctx, f)
 }
 
 // Delete mocks base method.
-func (m *MockFilmService) Delete(id string) error {
+func (m *MockFilmService) Delete(ctx context.Context, id string) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Delete", id)
+	ret := m.ctrl.Call(m, "Delete", ctx, id)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Delete indicates an expected call of Delete.
-func (mr *MockFilmServiceMockRecorder) Delete(id interface{}) *gomock.Call {
+func (mr *MockFilmServiceMockRecorder) Delete(ctx, id interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockFilmService)(nil).Delete), id)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockFilmService)(nil).Delete), ctx, id)
 }
 
 // Find mocks base method.
@@ -79,31 +80,46 @@ func (mr *MockFilmServiceMockRecorder) Find(id interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Find", reflect.TypeOf((*MockFilmService)(nil).Find), id)
 }
 
-// Search mocks base method.
-func (m *MockFilmService) Search() ([]models.Film, error) {
+// FindAll mocks base method.
+func (m *MockFilmService) FindAll() ([]models.Film, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Search")
+	ret := m.ctrl.Call(m, "FindAll")
+	ret0, _ := ret[0].([]models.Film)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FindAll indicates an expected call of FindAll.
+func (mr *MockFilmServiceMockRecorder) FindAll() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindAll", reflect.TypeOf((*MockFilmService)(nil).FindAll))
+}
+
+// Search mocks base method.
+func (m *MockFilmService) Search(ctx context.Context, name, description string, releaseYear uint16, rating float32) ([]models.Film, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Search", ctx, name, description, releaseYear, rating)
 	ret0, _ := ret[0].([]models.Film)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // Search indicates an expected call of Search.
-func (mr *MockFilmServiceMockRecorder) Search() *gomock.Call {
+func (mr *MockFilmServiceMockRecorder) Search(ctx, name, description, releaseYear, rating interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Search", reflect.TypeOf((*MockFilmService)(nil).Search))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Search", reflect.TypeOf((*MockFilmService)(nil).Search), ctx, name, description, releaseYear, rating)
 }
 
 // Update mocks base method.
-func (m *MockFilmService) Update(id string, f models0.UpdateFilm) error {
+func (m *MockFilmService) Update(ctx context.Context, id string, f models0.UpdateFilm) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Update", id, f)
+	ret := m.ctrl.Call(m, "Update", ctx, id, f)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Update indicates an expected call of Update.
-func (mr *MockFilmServiceMockRecorder) Update(id, f interface{}) *gomock.Call {
+func (mr *MockFilmServiceMockRecorder) Update(ctx, id, f interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockFilmService)(nil).Update), id, f)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockFilmService)(nil).Update), ctx, id, f)
 }
